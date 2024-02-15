@@ -42,5 +42,4 @@ function draw() {
     }
 
     updatePixels();
-    filter(BLUR, 4);
 }
