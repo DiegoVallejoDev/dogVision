@@ -1,18 +1,32 @@
 let video;
 
 function setup() {
-    createCanvas(640, 480);
+    const canvas = createCanvas(640, 480, { willReadFrequently: true });
+    //CanvasRenderingContext2D has a willReadFrequently property set to true
+    const canvasRenderingContext2D = canvas.elt.getContext('2d');
+    canvasRenderingContext2D.willReadFrequently = true;
 
-    // Use the back camera by specifying the video source
-    const constraints = {
+
+    // Specify constraints for the back and front cameras
+    const backCamConstraints = {
         video: {
-            facingMode: {
-                exact: 'environment' // 'environment' refers to the back camera
-            }
+            facingMode: 'environment', // Use back camera
         }
     };
 
-    video = createCapture(constraints);
+    const frontCamConstraints = {
+        video: {
+            facingMode: 'user', // Use front camera
+        }
+    };
+
+    // Try to use back camera, and if not available, use front camera
+    video = createCapture(backCamConstraints, function (stream) {
+        if (!stream) {
+            video = createCapture(frontCamConstraints); // Fall back to front camera
+        }
+    });
+
     video.size(width, height);
     video.hide();
 }
@@ -23,7 +37,8 @@ function draw() {
     loadPixels();
 
     for (let i = 0; i < pixels.length; i += 4) {
-        pixels[i] = 0; // Remove the red channel
+        // Remove the red channel
+        pixels[i] = 0;
     }
 
     updatePixels();
