@@ -37,9 +37,14 @@ function draw() {
     loadPixels();
 
     for (let i = 0; i < pixels.length; i += 4) {
+    // Check if red is the biggest color in RGB
+    if (pixels[i] >= pixels[i + 1] && pixels[i] >= pixels[i + 2]) {
         // Remove the red channel
         pixels[i] = 0;
     }
+    }
 
+
+    
     updatePixels();
 }
